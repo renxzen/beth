@@ -1,6 +1,7 @@
 import { Elysia } from "elysia";
 import { html } from "@elysiajs/html";
 import * as elements from "typed-html";
+import { Todo } from "./types/todo";
 
 const app = new Elysia()
 	.use(html())
@@ -20,7 +21,9 @@ const app = new Elysia()
 		),
 	)
 	.post("/clicked", () => (
-		<div class="text-blue-600 text-2xl font-bold italic">I'm from the server!</div>
+		<div class="text-blue-600 text-2xl font-bold italic">
+			I'm from the server!
+		</div>
 	))
 	.listen(3000);
 
@@ -44,3 +47,27 @@ const BaseHtml = ({ children }: elements.Children) => `
 		${children}
 	</html>
 `;
+
+const db: Todo[] = [
+	{ id: 1, content: "lean beth", completed: true },
+	{ id: 1, content: "lean vim", completed: false },
+];
+
+const TodoItem = ({ content, completed, id }: Todo) => (
+	<div class="flex flex-row space-x-3">
+		<p>{content}</p>
+		<input
+			type="checked"
+			checked={completed}
+		/>
+		<button class="text-red-500">X</button>
+	</div>
+);
+
+const TodoList = ({ todos }: { todos: Todo[] }) => (
+	<div>
+		{todos.map((todo) => (
+			<TodoItem {...todo} />
+		))}
+	</div>
+);
