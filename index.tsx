@@ -8,23 +8,29 @@ const app = new Elysia()
 	.get("/", ({ html }) =>
 		html(
 			<BaseHtml>
-				<body class="flex w-full h-screen justify-center items-center">
+				<body class="flex flex-col gap-5 w-full h-screen justify-center items-center">
+					<div
+						hx-post="/onload"
+						hx-trigger="load"
+						hx-swap="innerHTML"
+					></div>
 					<button
 						class="rounded-xl border border-blue-500 bg-blue-400 p-4"
-						hx-post="/clicked"
+						hx-get="/todos"
 						hx-swap="outerHTML"
 					>
-						Click Me
+						Show todos
 					</button>
 				</body>
 			</BaseHtml>,
 		),
 	)
-	.post("/clicked", () => (
+	.post("/onload", () => (
 		<div class="text-blue-600 text-2xl font-bold italic">
-			I'm from the server!
+			Welcome to the todos list!
 		</div>
 	))
+	.get("/todos", () => <TodoList todos={db} />)
 	.listen(3000);
 
 console.log(
@@ -57,7 +63,7 @@ const TodoItem = ({ content, completed, id }: Todo) => (
 	<div class="flex flex-row space-x-3">
 		<p>{content}</p>
 		<input
-			type="checked"
+			type="checkbox"
 			checked={completed}
 		/>
 		<button class="text-red-500">X</button>
