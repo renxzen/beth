@@ -34,12 +34,26 @@ const app = new Elysia()
 	))
 	.get("/todos", () => <TodoList todos={db} />)
 	.post(
-		"todos/toggle/:id",
+		"/todos/toggle/:id",
 		({ params }) => {
 			const todo = db.find((todo) => todo.id === params.id);
 			if (todo) {
 				todo.completed = !todo.completed;
 				return <TodoItem {...todo} />;
+			}
+		},
+		{
+			params: t.Object({
+				id: t.Numeric(),
+			}),
+		},
+	)
+	.delete(
+		"/todos/:id",
+		({ params }) => {
+			const todo = db.find((todo) => todo.id === params.id);
+			if (todo) {
+				db.splice(db.indexOf(todo), 1);
 			}
 		},
 		{

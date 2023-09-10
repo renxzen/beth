@@ -11,6 +11,13 @@ export const TodoItem = ({ content, completed, id }: Todo) => (
 			hx-target="closest div"
 			hx-swap="outerHTML"
 		/>
-		<button class="text-red-500">X</button>
+		<button
+			class="text-red-500"
+			hx-delete={`/todos/${id}`}
+			hx-swap="outerHTML"
+			hx-target="closest div"
+		>
+			X
+		</button>
 	</div>
 );
