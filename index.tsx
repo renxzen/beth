@@ -4,14 +4,25 @@ import * as elements from "typed-html";
 
 const app = new Elysia()
 	.use(html())
-	.get("/", ({ html }) => html(baseHtml))
+	.get("/", ({ html }) =>
+		html(
+			<BaseHtml>
+				<body>
+					<button hx-post="/clicked" hx-swap="outerHTML">
+						Click Me
+					</button>
+				</body>
+			</BaseHtml>,
+		),
+	)
+	.post("/clicked", () => <div>I'm from the server!</div>)
 	.listen(3000);
 
 console.log(
 	`Elysia is running at http://${app.server?.hostname}:${app.server?.port}`,
 );
 
-const baseHtml = `
+const BaseHtml = ({ children }: elements.Children) => `
 	<!doctype html>
 	<html lang="en">
 		<head>
@@ -21,9 +32,8 @@ const baseHtml = `
 				content="width=device-width, initial-scale=1"
 			/>
 			<title>THE BETH STACK</title>
+			<script src="https://unpkg.com/htmx.org@1.9.5"></script>
 		</head>
-		<body>
-			I'm a html document
-		</body>
+		${children}
 	</html>
 `;
