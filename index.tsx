@@ -62,6 +62,28 @@ const app = new Elysia()
 			}),
 		},
 	)
+	.post(
+		"/todos",
+		({ body }) => {
+			if (body.content.length === 0) {
+				throw new Error("Content cannot be empty");
+			}
+
+			const newTodo = {
+				id: lastID++,
+				content: body.content,
+				completed: false,
+			};
+			db.push(newTodo);
+			return <TodoItem {...newTodo} />;
+		},
+
+		{
+			body: t.Object({
+				content: t.String(),
+			}),
+		},
+	)
 	.listen(3000);
 
 console.log(
@@ -89,3 +111,5 @@ const db: Todo[] = [
 	{ id: 1, content: "learn beth", completed: true },
 	{ id: 2, content: "learn vim", completed: false },
 ];
+
+let lastID = db.length;
