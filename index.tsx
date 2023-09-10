@@ -1,5 +1,6 @@
 import { Elysia } from "elysia";
 import { html } from "@elysiajs/html";
+import * as elements from "typed-html";
 
 const app = new Elysia()
 	.use(html())
