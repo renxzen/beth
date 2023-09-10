@@ -1,7 +1,9 @@
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import { html } from "@elysiajs/html";
 import * as elements from "typed-html";
 import { Todo } from "./types/todo";
+import { TodoList } from "./components/todolist";
+import { TodoItem } from "./components/todoitem";
 
 const app = new Elysia()
 	.use(html())
@@ -31,6 +33,21 @@ const app = new Elysia()
 		</div>
 	))
 	.get("/todos", () => <TodoList todos={db} />)
+	.post(
+		"todos/toggle/:id",
+		({ params }) => {
+			const todo = db.find((todo) => todo.id === params.id);
+			if (todo) {
+				todo.completed = !todo.completed;
+				return <TodoItem {...todo} />;
+			}
+		},
+		{
+			params: t.Object({
+				id: t.Numeric(),
+			}),
+		},
+	)
 	.listen(3000);
 
 console.log(
@@ -55,25 +72,6 @@ const BaseHtml = ({ children }: elements.Children) => `
 `;
 
 const db: Todo[] = [
-	{ id: 1, content: "lean beth", completed: true },
-	{ id: 1, content: "lean vim", completed: false },
+	{ id: 1, content: "learn beth", completed: true },
+	{ id: 2, content: "learn vim", completed: false },
 ];
-
-const TodoItem = ({ content, completed, id }: Todo) => (
-	<div class="flex flex-row space-x-3">
-		<p>{content}</p>
-		<input
-			type="checkbox"
-			checked={completed}
-		/>
-		<button class="text-red-500">X</button>
-	</div>
-);
-
-const TodoList = ({ todos }: { todos: Todo[] }) => (
-	<div>
-		{todos.map((todo) => (
-			<TodoItem {...todo} />
-		))}
-	</div>
-);
