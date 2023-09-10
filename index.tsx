@@ -33,6 +33,7 @@ const BaseHtml = ({ children }: elements.Children) => `
 			/>
 			<title>THE BETH STACK</title>
 			<script src="https://unpkg.com/htmx.org@1.9.5"></script>
+			<script src="https://cdn.tailwindcss.com"></script>
 		</head>
 		${children}
 	</html>
