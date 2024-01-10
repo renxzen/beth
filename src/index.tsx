@@ -84,6 +84,7 @@ const app = new Elysia()
 			}),
 		},
 	)
+	.get("/styles.css", () => Bun.file("./tailwind-gen/styles.css"))
 	.listen(3000);
 
 console.log(
@@ -101,7 +102,7 @@ const BaseHtml = ({ children }: elements.Children) => `
 			/>
 			<title>THE BETH STACK</title>
 			<script src="https://unpkg.com/htmx.org@1.9.5"></script>
-			<script src="https://cdn.tailwindcss.com"></script>
+			<link href="/styles.css" rel="stylesheet">
 		</head>
 		${children}
 	</html>
