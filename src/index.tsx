@@ -108,6 +108,7 @@ const BaseHtml = ({ children }: elements.Children) => `
 			/>
 			<title>THE BETH STACK</title>
 			<script src="https://unpkg.com/htmx.org@1.9.5"></script>
+			<script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
 			<link href="/styles.css" rel="stylesheet">
 		</head>
 		${children}

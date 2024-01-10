@@ -7,7 +7,7 @@ export const TodoForm = () => {
 			class="flex flex-row space-x-3"
 			hx-post="/todos"
 			hx-swap="beforebegin"
-			hx-on="htmx:afterRequest:this.reset()"
+			_="on submit target.reset()"
 		>
 			<input
 				type="text"
