@@ -77,7 +77,6 @@ const app = new Elysia()
 			db.push(newTodo);
 			return <TodoItem {...newTodo} />;
 		},
-
 		{
 			body: t.Object({
 				content: t.String(),
