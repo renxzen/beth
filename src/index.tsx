@@ -1,9 +1,11 @@
 import { Elysia, t } from "elysia";
 import { html } from "@elysiajs/html";
 import * as elements from "typed-html";
-import { Todo } from "./types/todo";
 import { TodoList } from "./components/todolist";
 import { TodoItem } from "./components/todoitem";
+import { db } from "./db";
+import { Todo, todos } from "./db/schema";
+import { eq } from "drizzle-orm";
 
 const app = new Elysia()
 	.use(html())
@@ -32,14 +34,27 @@ const app = new Elysia()
 			Welcome to the todos list!
 		</div>
 	))
-	.get("/todos", () => <TodoList todos={db} />)
+	.get("/todos", async () => {
+		const data = await db.select().from(todos).all();
+		return <TodoList todos={data} />;
+	})
 	.post(
 		"/todos/toggle/:id",
-		({ params }) => {
-			const todo = db.find((todo) => todo.id === params.id);
+		async ({ params }) => {
+			// const todo = db.find((todo) => todo.id === params.id);
+			const todo = await db
+				.select()
+				.from(todos)
+				.where(eq(todos.id, params.id))
+				.get();
 			if (todo) {
-				todo.completed = !todo.completed;
-				return <TodoItem {...todo} />;
+				const newTodo = await db
+					.update(todos)
+					.set({ completed: !todo.completed })
+					.where(eq(todos.id, params.id))
+					.returning()
+					.get();
+				return <TodoItem {...newTodo} />;
 			}
 		},
 		{
@@ -50,11 +65,8 @@ const app = new Elysia()
 	)
 	.delete(
 		"/todos/:id",
-		({ params }) => {
-			const todo = db.find((todo) => todo.id === params.id);
-			if (todo) {
-				db.splice(db.indexOf(todo), 1);
-			}
+		async ({ params }) => {
+			await db.delete(todos).where(eq(todos.id, params.id)).run();
 		},
 		{
 			params: t.Object({
@@ -64,17 +76,12 @@ const app = new Elysia()
 	)
 	.post(
 		"/todos",
-		({ body }) => {
+		async ({ body }) => {
 			if (body.content.length === 0) {
 				throw new Error("Content cannot be empty");
 			}
 
-			const newTodo = {
-				id: lastID++,
-				content: body.content,
-				completed: false,
-			};
-			db.push(newTodo);
+			const newTodo = await db.insert(todos).values(body).returning().get();
 			return <TodoItem {...newTodo} />;
 		},
 		{
@@ -106,10 +113,3 @@ const BaseHtml = ({ children }: elements.Children) => `
 		${children}
 	</html>
 `;
-
-const db: Todo[] = [
-	{ id: 1, content: "learn beth", completed: true },
-	{ id: 2, content: "learn vim", completed: false },
-];
-
-let lastID = db.length;
