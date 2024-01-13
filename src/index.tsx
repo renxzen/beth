@@ -91,7 +91,7 @@ const app = new Elysia()
 		},
 	)
 	.get("/styles.css", () => Bun.file("./tailwind-gen/styles.css"))
-	.listen(3000);
+	.listen(8000);
 
 console.log(
 	`Elysia is running at http://${app.server?.hostname}:${app.server?.port}`,
