@@ -10,6 +10,7 @@
     "db:studio": "bunx drizzle-kit studio"
   },
   "devDependencies": {
+    "@flydotio/dockerfile": "latest",
     "bun-types": "latest",
     "concurrently": "^8.2.2",
     "drizzle-kit": "^0.20.10",
